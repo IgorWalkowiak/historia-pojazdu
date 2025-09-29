@@ -112,6 +112,5 @@ def run_console_ui() -> None:
 
 if __name__ == "__main__":
     run_console_ui()
-    #find_first_registration_date("PKS66438", "VF1RJB00265666724", 2020)
 
     

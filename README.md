@@ -10,8 +10,9 @@ Ten program pomaga znaleźć dokładną datę pierwszej rejestracji pojazdu. Wys
 
 ### Jak uruchomić krok po kroku
 
-1. Pobierz projekt jako ZIP i rozpakuj na komputerze (np. do folderu „historia-pojazdu”).
-2. Wejdź do rozpakowanego folderu.
+1. Pobierz projekt jako ZIP (Na górze projektu zielone "<> Code", lub niżej w sekcji "Pobierz")
+2. rozpakuj na komputerze (np. do folderu „historia-pojazdu”).
+3. Wejdź do rozpakowanego folderu.
 
 **Windows (najprościej, najmniej przetestowane)**
 - Kliknij dwukrotnie plik `Uruchom.bat`.

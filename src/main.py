@@ -33,6 +33,8 @@ def run_console_ui() -> None:
     vin_number = Prompt.ask("Podaj numer VIN (np. VF1RJB00265666700)").strip().upper()
     year_to_check = IntPrompt.ask("Podaj rok do sprawdzenia (np. 2020)")
 
+    console.print("Prosze czekać")
+
     date_generator = DateGenerator(year_to_check)
     total_days = (date_generator.end_date - date_generator.start_date).days + 1
 

@@ -13,6 +13,9 @@ def build_session_value():
 
 class VehicleDataFetcher:
     def __init__(self):
+        self.refresh_tokens()
+
+    def refresh_tokens(self):
         self.session = requests.Session()
         self.nf_wid_value = build_session_value()
         
@@ -24,7 +27,6 @@ class VehicleDataFetcher:
         
         self.session.post(MAIN_URL, data=form_data)
         self.xsrf_token = self.session.cookies.get('XSRF-TOKEN')
-
 
     def get_vehicle_data(self, registration_number, vin_number, first_registration_date):
         

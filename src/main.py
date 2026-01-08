@@ -7,6 +7,11 @@ from rich.prompt import Prompt, IntPrompt
 from rich.align import Align
 import time
 
+WAIT_TIME_ONE_CHECK = 12
+WAIT_TIME_ON_REQ_LIMIT = 20
+RETRIES_ON_REQ_LIMIT = 2
+
+
 def find_first_registration_date(registration_number: str, vin_number: str, year_to_check: int) -> str | None:
     fetcher = VehicleDataFetcher()
     for first_registration_date in DateGenerator(year_to_check):
@@ -15,7 +20,7 @@ def find_first_registration_date(registration_number: str, vin_number: str, year
             vin_number=vin_number,
             first_registration_date=first_registration_date,
         )
-        print(f"Found on {response.status_code}, {response.text}")
+        print(f"Znaleziono! {response.status_code}, {response.text}")
 
 
 def run_console_ui() -> None:
@@ -61,13 +66,25 @@ def run_console_ui() -> None:
                     first_registration_date=current_date,
                 )
                 if response.status_code == 429:
-                    print(f"Error: {response.status_code}, {response.text}")
-                    time.sleep(10)
-                    response = fetcher.get_vehicle_data(
-                        registration_number=registration_number,
-                        vin_number=vin_number,
-                        first_registration_date=current_date,
-                    )
+                    for attempt in range(1, RETRIES_ON_REQ_LIMIT+1):
+                        print(f"Error: {response.status_code}, {response.text}")
+                        print(f"Próbuje jeszcze raz za {WAIT_TIME_ON_REQ_LIMIT * attempt} sekund. {attempt} z {RETRIES_ON_REQ_LIMIT} prób")
+                        time.sleep(WAIT_TIME_ON_REQ_LIMIT * attempt)
+                        if attempt == RETRIES_ON_REQ_LIMIT:
+                            print("Odświeżam połączenie")
+                            fetcher.refresh_tokens()
+                        response = fetcher.get_vehicle_data(
+                            registration_number=registration_number,
+                            vin_number=vin_number,
+                            first_registration_date=current_date,
+                        )
+                        if len(response.text) != 0:
+                            break
+                    else:
+                        print("ERROR!")
+                        print("Coś się popsuło z połączeniem, zgłoś to na github!!")
+                        print("ERROR!")
+                        break
                 if response.status_code == 200:
                     found_date = current_date
                     break
@@ -81,7 +98,7 @@ def run_console_ui() -> None:
                         )
                     )
                     break
-                time.sleep(3)
+                time.sleep(WAIT_TIME_ONE_CHECK)
             except Exception as e:                    
                 console.print(
                         Panel(
